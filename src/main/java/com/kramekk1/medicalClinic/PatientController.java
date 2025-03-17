@@ -11,31 +11,30 @@ import java.util.Optional;
 @RequestMapping("/patients")
 public class PatientController {
 
-    private final PatientRepository patientRepository;
     private final PatientService patientService;
 
-    @GetMapping("/all")
+    @GetMapping
     public List<Patient> getPatients() {
-        return patientRepository.getPatients();
+        return patientService.getPatients();
     }
+
     @GetMapping("/{email}")
     public Optional<Patient> getPatientByEmail(@PathVariable String email) {
-        return patientRepository.findPatientByEmail(email);
+        return patientService.getPatientByEmail(email);
     }
 
     @PostMapping("/add")
-    public String addPatient(@RequestBody Patient patient) {
-        patientRepository.addPatient(patient);
-        return "Dodano pomyslnie";
+    public void addPatient(@RequestBody Patient patient) {
+        patientService.addPatient(patient);
     }
+
     @PutMapping("/{email}")
-    public String updatePatient(@PathVariable String email, @RequestBody Patient newPatient) {
+    public void updatePatient(@PathVariable String email, @RequestBody Patient newPatient) {
         patientService.editPatientByEmail(email, newPatient);
-        return "Zaktualizowano pacjenta";
     }
+
     @DeleteMapping("/{email}")
-    public String deletePatient(@PathVariable String email) {
-        patientRepository.deletePatient(email);
-        return "Usunieto pacjenta";
+    public void deletePatient(@PathVariable String email) {
+        patientService.deletePatient(email);
     }
 }

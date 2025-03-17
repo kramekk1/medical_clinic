@@ -3,7 +3,6 @@ package com.kramekk1.medicalClinic;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,21 +11,35 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 public class PatientRepository {
-    private final List<Patient> allPatients = new ArrayList<>();
+    private final List<Patient> patients = new ArrayList<>();
 
     public List<Patient> getPatients() {
-        return new ArrayList<>(allPatients);
+        return new ArrayList<>(patients);
     }
-    public Optional<Patient> findPatientByEmail(@PathVariable String email) {
-        return allPatients.stream()
+
+    public Optional<Patient> findPatientByEmail(String email) {
+        return patients.stream()
                 .filter(patient -> email.equals(patient.getEmail()))
                 .findFirst();
     }
+
     public void addPatient(Patient patient) {
-        allPatients.add(patient);
+        patients.add(patient);
     }
-    public void deletePatient(@PathVariable String email) {
-        allPatients.removeIf(patient -> email.equals(patient.getEmail()));
+
+    public void deletePatient(String email) {
+        patients.removeIf(patient -> email.equals(patient.getEmail()));
+    }
+
+    public void editPatientByEmail(String email, Patient newPatient) {
+        Patient patient = findPatientByEmail(email).orElseThrow(() -> new IllegalArgumentException("Patient not found"));
+        patient.setFirstName(newPatient.getFirstName());
+        patient.setLastName(newPatient.getLastName());
+        patient.setIdCardNo(newPatient.getIdCardNo());
+        patient.setBirthday(newPatient.getBirthday());
+        patient.setEmail(newPatient.getEmail());
+        patient.setPassword(newPatient.getPassword());
+        patient.setPhoneNumber(newPatient.getPhoneNumber());
     }
 
 }
