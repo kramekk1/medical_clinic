@@ -27,7 +27,7 @@ public class PatientController {
     }
 
     @ResponseStatus(HttpStatus.CREATED) // zwrocenie statusu http 201 CREATED
-    @PostMapping("/add") // utworz zasob na serwerze pod sciezka .../add
+    @PostMapping() // utworz zasob na serwerze pod sciezka .../add
     public void addPatient(@RequestBody Patient patient) { // @RequestBody pobierze przekazane przez zapytanie body i na jego podstawie utworzy obiekt Patient
         patientService.addPatient(patient);
     }

@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Repository // oznaczenie klasy - beana, która łączy logike biznesową z zasobami(w tym wypadku lista). Tutaj beda metody "wykonujące"? konkretne rzeczy, dzialajace na zasobie
 // zasób to bedzie w rozumieniu np cała lista pacjentów np 100 osób, czy zasobem moze byc tez jeden chłop?
+// co to ten wraper
 @RequiredArgsConstructor
 public class PatientRepository {
     private final List<Patient> patients = new ArrayList<>();
