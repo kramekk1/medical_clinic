@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@Service
-@RequiredArgsConstructor
+@Service // klasa bean service do obsługi logiki biznesowej, glownie przekierowuje do metod z PatientRepository, które działają na zasobach
+@RequiredArgsConstructor // adnotacja do utworzenia konstrukora, potrzebna do wstrzykniecia zaleznosci
 public class PatientService {
-    private final PatientRepository patientRepository;
+    private final PatientRepository patientRepository; // pole finalne ktore pobierze @ReqArgConst, ktore jest beanem i zostanie wstrzykniete w ta klase
 
     public void editPatientByEmail(String email, Patient newPatient) {
         patientRepository.editPatientByEmail(email, newPatient);
