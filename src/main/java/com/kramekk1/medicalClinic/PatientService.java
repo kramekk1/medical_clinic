@@ -6,7 +6,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@Service // klasa bean service do obsługi logiki biznesowej, glownie przekierowuje do metod z PatientRepository, które działają na zasobach
+@Service
+// klasa bean service do obsługi logiki biznesowej, glownie przekierowuje do metod z PatientRepository, które działają na zasobach
 @RequiredArgsConstructor // adnotacja do utworzenia konstrukora, potrzebna do wstrzykniecia zaleznosci
 public class PatientService {
     private final PatientRepository patientRepository; // pole finalne ktore pobierze @ReqArgConst, ktore jest beanem i zostanie wstrzykniete w ta klase
@@ -20,14 +21,20 @@ public class PatientService {
     }
 
     public Optional<Patient> getPatientByEmail(String email) {
-        return patientRepository.findPatientByEmail(email);
+        Optional<Patient> patient = patientRepository.findPatientByEmail(email);
+        PatientValidator.validatePatient(patient);
+        return patient;
     }
 
     public void addPatient(Patient patient) {
+        PatientValidator.validateEmailDuplicate(patient.getEmail(), patientRepository);
+        PatientValidator.validateEmailNotNull(patient);
         patientRepository.addPatient(patient);
     }
 
     public void deletePatient(String email) {
+        Optional<Patient> patient = patientRepository.findPatientByEmail(email);
+        patient.ifPresent(PatientValidator::validateEmailNotNull);
         patientRepository.deletePatient(email);
     }
 

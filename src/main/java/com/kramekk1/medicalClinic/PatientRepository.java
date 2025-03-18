@@ -35,9 +35,10 @@ public class PatientRepository {
 
     public void editPatientByEmail(String email, Patient newPatient) {
         Patient patient = findPatientByEmail(email).orElseThrow(() -> new IllegalArgumentException("Patient not found"));
+        PatientValidator.validateNullField(newPatient);
+
         patient.setFirstName(newPatient.getFirstName());
         patient.setLastName(newPatient.getLastName());
-        patient.setIdCardNo(newPatient.getIdCardNo());
         patient.setBirthday(newPatient.getBirthday());
         patient.setEmail(newPatient.getEmail());
         patient.setPassword(newPatient.getPassword());

@@ -27,12 +27,12 @@ public class PatientController {
     }
 
     @ResponseStatus(HttpStatus.CREATED) // zwrocenie statusu http 201 CREATED
-    @PostMapping() // utworz zasob na serwerze pod sciezka .../add
+    @PostMapping() // utworz zasob na serwerze pod sciezka
     public void addPatient(@RequestBody Patient patient) { // @RequestBody pobierze przekazane przez zapytanie body i na jego podstawie utworzy obiekt Patient
         patientService.addPatient(patient);
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT) // zwrocenie statusu 204 NO CONTENT gdy nie przekazemy body?
+    @ResponseStatus(HttpStatus.NO_CONTENT) // zwrocenie statusu 204 NO CONTENT gdy zamowienie sie przetworzy i nie jest przewidziana zadna tresc odpowiedz w body
     @PutMapping("/{email}") // calosciowa edycja istniejacego zasobu
     public void updatePatient(@PathVariable String email, @RequestBody Patient newPatient) {
         patientService.editPatientByEmail(email, newPatient);
