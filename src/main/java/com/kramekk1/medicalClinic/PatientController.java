@@ -48,7 +48,7 @@ public class PatientController {
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/{email}")
-    public void editPasswordByEmail(@PathVariable String email, @RequestBody String newPassword) {
-        patientService.editPasswordByEmail(email, newPassword);
+    public void editPasswordByEmail(@PathVariable String email, @RequestBody PatientPassword newPassword) {
+        patientService.editPasswordByEmail(email, newPassword.getPassword());
     }
 }
