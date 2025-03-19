@@ -33,7 +33,8 @@ public class PatientController {
         return patient;
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT) // zwrocenie statusu 204 NO CONTENT gdy zamowienie sie przetworzy i nie jest przewidziana zadna tresc odpowiedz w body
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    // zwrocenie statusu 204 NO CONTENT gdy zamowienie sie przetworzy i nie jest przewidziana zadna tresc odpowiedz w body
     @PutMapping("/{email}") // calosciowa edycja istniejacego zasobu
     public void updatePatient(@PathVariable String email, @RequestBody Patient newPatient) {
         patientService.editPatientByEmail(email, newPatient);
@@ -43,5 +44,11 @@ public class PatientController {
     @DeleteMapping("/{email}") // usuwanie zasobu na podstawie sciezki /{email}
     public void deletePatient(@PathVariable String email) {
         patientService.deletePatient(email);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/{email}")
+    public void editPasswordByEmail(@PathVariable String email, @RequestBody String newPassword) {
+        patientService.editPasswordByEmail(email, newPassword);
     }
 }

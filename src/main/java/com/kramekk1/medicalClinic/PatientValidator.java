@@ -34,4 +34,10 @@ public final class PatientValidator {
             throw new IllegalArgumentException("One or more patient data field is null");
         }
     }
+
+    public static void validateIncorrectEmail(Optional<Patient> patient) {
+        if (patient.isEmpty()) {
+            throw new IllegalArgumentException("Entered email not exist");
+        }
+    }
 }

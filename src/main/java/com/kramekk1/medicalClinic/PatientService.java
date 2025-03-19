@@ -40,4 +40,10 @@ public class PatientService {
         patientRepository.deletePatient(email);
     }
 
+    public void editPasswordByEmail(String email, String newPassword) {
+        Optional<Patient> patient = patientRepository.findPatientByEmail(email);
+        patient.ifPresent(PatientValidator::validateEmailNotNull);
+        PatientValidator.validateIncorrectEmail(patient);
+        patientRepository.editPasswordByEmail(email, newPassword);
+    }
 }
