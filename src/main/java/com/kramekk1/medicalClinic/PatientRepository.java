@@ -44,4 +44,8 @@ public class PatientRepository {
         patient.setPhoneNumber(newPatient.getPhoneNumber());
     }
 
+    public void editPasswordByEmail(String email, String newPassword) {
+        Optional<Patient> patient = findPatientByEmail(email);
+        patient.ifPresent(pat -> pat.setPassword(newPassword));
+    }
 }
