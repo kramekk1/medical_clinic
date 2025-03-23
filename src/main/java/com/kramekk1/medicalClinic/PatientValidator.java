@@ -18,7 +18,7 @@ public final class PatientValidator {
 
     public static void validateEmailNotNull(Patient patient) {
         if (patient.getEmail() == null) {
-            throw new IllegalArgumentException("Patient email is null"); // ?
+            throw new IllegalArgumentException("Patient email is null");
         }
     }
 
@@ -34,4 +34,5 @@ public final class PatientValidator {
             throw new IllegalArgumentException("One or more patient data field is null");
         }
     }
+
 }

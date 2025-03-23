@@ -14,13 +14,11 @@ public class PatientController {
 
     private final PatientService patientService; // pole finalne, które z @ReqArgsConst tworzy konstruktor z tym polem i dzieki temu wstrzykuje zaleznosci klasy service, która jest tutaj beanem
 
-    @ResponseStatus(HttpStatus.OK) // zwrocenie statusu 200 OK po przetworzeniu zapytania
     @GetMapping // pobierz zasób z serwera
     public List<Patient> getPatients() {
         return patientService.getPatients();
     }
 
-    @ResponseStatus(HttpStatus.OK) // tjw.
     @GetMapping("/{email}") // pobierz zasób z serwera na podstawie adresu email przekazanego w ścieżce -> @PathVariable
     public Optional<Patient> getPatientByEmail(@PathVariable String email) {
         return patientService.getPatientByEmail(email);
@@ -33,15 +31,21 @@ public class PatientController {
         return patient;
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT) // zwrocenie statusu 204 NO CONTENT gdy zamowienie sie przetworzy i nie jest przewidziana zadna tresc odpowiedz w body
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    // zwrocenie statusu 204 NO CONTENT gdy zamowienie sie przetworzy i nie jest przewidziana zadna tresc odpowiedz w body
     @PutMapping("/{email}") // calosciowa edycja istniejacego zasobu
     public void updatePatient(@PathVariable String email, @RequestBody Patient newPatient) {
         patientService.editPatientByEmail(email, newPatient);
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{email}") // usuwanie zasobu na podstawie sciezki /{email}
     public void deletePatient(@PathVariable String email) {
         patientService.deletePatient(email);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PatchMapping("/{email}")
+    public void editPasswordByEmail(@PathVariable String email, @RequestBody PatientPassword newPassword) {
+        patientService.editPasswordByEmail(email, newPassword.getPassword());
     }
 }

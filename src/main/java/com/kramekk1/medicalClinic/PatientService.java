@@ -13,9 +13,9 @@ public class PatientService {
     private final PatientRepository patientRepository; // pole finalne ktore pobierze @ReqArgConst, ktore jest beanem i zostanie wstrzykniete w ta klase
 
     public void editPatientByEmail(String email, Patient newPatient) {
-        PatientValidator.validateEmailDuplicate(newPatient.getEmail(), patientRepository);
         PatientValidator.validateNullField(newPatient);
-        patientRepository.editPatientByEmail(email, newPatient);
+        Patient patient = patientRepository.findPatientByEmail(email).orElseThrow(() -> new IllegalArgumentException("Patient not found"));
+        patientRepository.editPatientData(patient, newPatient);
     }
 
     public List<Patient> getPatients() {
@@ -40,4 +40,8 @@ public class PatientService {
         patientRepository.deletePatient(email);
     }
 
+    public void editPasswordByEmail(String email, String newPassword) {
+        Patient patient = patientRepository.findPatientByEmail(email).orElseThrow(() -> new IllegalArgumentException("Patient with entered email does not exist"));
+        patientRepository.editPassword(patient, newPassword);
+    }
 }
