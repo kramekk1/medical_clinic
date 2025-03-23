@@ -14,13 +14,11 @@ public class PatientController {
 
     private final PatientService patientService; // pole finalne, które z @ReqArgsConst tworzy konstruktor z tym polem i dzieki temu wstrzykuje zaleznosci klasy service, która jest tutaj beanem
 
-    @ResponseStatus(HttpStatus.OK) // zwrocenie statusu 200 OK po przetworzeniu zapytania
     @GetMapping // pobierz zasób z serwera
     public List<Patient> getPatients() {
         return patientService.getPatients();
     }
 
-    @ResponseStatus(HttpStatus.OK) // tjw.
     @GetMapping("/{email}") // pobierz zasób z serwera na podstawie adresu email przekazanego w ścieżce -> @PathVariable
     public Optional<Patient> getPatientByEmail(@PathVariable String email) {
         return patientService.getPatientByEmail(email);
@@ -40,13 +38,12 @@ public class PatientController {
         patientService.editPatientByEmail(email, newPatient);
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{email}") // usuwanie zasobu na podstawie sciezki /{email}
     public void deletePatient(@PathVariable String email) {
         patientService.deletePatient(email);
     }
 
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/{email}")
     public void editPasswordByEmail(@PathVariable String email, @RequestBody PatientPassword newPassword) {
         patientService.editPasswordByEmail(email, newPassword.getPassword());

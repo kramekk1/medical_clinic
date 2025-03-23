@@ -35,9 +35,4 @@ public final class PatientValidator {
         }
     }
 
-    public static void validateIncorrectEmail(Optional<Patient> patient) {
-        if (patient.isEmpty()) {
-            throw new IllegalArgumentException("Entered email not exist");
-        }
-    }
 }
