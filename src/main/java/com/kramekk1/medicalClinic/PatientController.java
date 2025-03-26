@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController //Adnotacja mowiaca ze klasa jest beanem typu controller- obslugujaca endpointy na bazie protokołu http
 @RequiredArgsConstructor //adnotacja tworzaca konstruktor w momencie kompilacji na podstawie pól finalnych
@@ -20,7 +19,7 @@ public class PatientController {
     }
 
     @GetMapping("/{email}") // pobierz zasób z serwera na podstawie adresu email przekazanego w ścieżce -> @PathVariable
-    public Optional<Patient> getPatientByEmail(@PathVariable String email) {
+    public Patient getPatientByEmail(@PathVariable String email) {
         return patientService.getPatientByEmail(email);
     }
 

@@ -1,10 +1,10 @@
 package com.kramekk1.medicalClinic;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 // klasa bean service do obsługi logiki biznesowej, glownie przekierowuje do metod z PatientRepository, które działają na zasobach
@@ -14,7 +14,7 @@ public class PatientService {
 
     public void editPatientByEmail(String email, Patient newPatient) {
         PatientValidator.validateNullField(newPatient);
-        Patient patient = patientRepository.findPatientByEmail(email).orElseThrow(() -> new IllegalArgumentException("Patient not found"));
+        Patient patient = patientRepository.findPatientByEmail(email).orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
         patientRepository.editPatientData(patient, newPatient);
     }
 
@@ -22,26 +22,24 @@ public class PatientService {
         return patientRepository.getPatients();
     }
 
-    public Optional<Patient> getPatientByEmail(String email) {
-        Optional<Patient> patient = patientRepository.findPatientByEmail(email);
-        PatientValidator.validatePatient(patient);
-        return patient;
+    public Patient getPatientByEmail(String email) {
+        //      PatientValidator.validatePatient(patient);
+        return patientRepository.findPatientByEmail(email).orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
     }
 
     public void addPatient(Patient patient) {
+        PatientValidator.validateNullField(patient);
         PatientValidator.validateEmailDuplicate(patient.getEmail(), patientRepository);
-        PatientValidator.validateEmailNotNull(patient);
         patientRepository.addPatient(patient);
     }
 
     public void deletePatient(String email) {
-        Optional<Patient> patient = patientRepository.findPatientByEmail(email);
-        patient.ifPresent(PatientValidator::validateEmailNotNull);
+        patientRepository.findPatientByEmail(email).orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
         patientRepository.deletePatient(email);
     }
 
     public void editPasswordByEmail(String email, String newPassword) {
-        Patient patient = patientRepository.findPatientByEmail(email).orElseThrow(() -> new IllegalArgumentException("Patient with entered email does not exist"));
+        Patient patient = patientRepository.findPatientByEmail(email).orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
         patientRepository.editPassword(patient, newPassword);
     }
 }
