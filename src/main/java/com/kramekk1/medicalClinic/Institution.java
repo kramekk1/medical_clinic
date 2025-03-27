@@ -1,14 +1,11 @@
 package com.kramekk1.medicalClinic;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class Institution {
     private String name;
     private String postalCode;

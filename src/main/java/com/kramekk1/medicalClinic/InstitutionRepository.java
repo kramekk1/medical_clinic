@@ -11,21 +11,21 @@ import java.util.Optional;
 @Repository
 public class InstitutionRepository {
 
-    private final List<Institution> institutionList = new ArrayList<>();
+    private final List<Institution> institutions = new ArrayList<>();
 
     public List<Institution> getAll() {
-        return new ArrayList<>(institutionList);
+        return new ArrayList<>(institutions);
     }
 
     public Optional<Institution> findByName(String name) {
-        return institutionList.stream().filter(institution -> name.equals(institution.getName())).findFirst();
+        return institutions.stream().filter(institution -> name.equals(institution.getName())).findFirst();
     }
 
     public void delete(String institutionName) {
-        institutionList.removeIf(institution -> institutionName.equals(institution.getName()));
+        institutions.removeIf(institution -> institutionName.equals(institution.getName()));
     }
 
     public void add(Institution institution) {
-        institutionList.add(institution);
+        institutions.add(institution);
     }
 }

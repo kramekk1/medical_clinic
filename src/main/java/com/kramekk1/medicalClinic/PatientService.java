@@ -14,7 +14,8 @@ public class PatientService {
 
     public void editPatientByEmail(String email, Patient newPatient) {
         PatientValidator.validateNullField(newPatient);
-        Patient patient = patientRepository.findPatientByEmail(email).orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
+        Patient patient = patientRepository.findPatientByEmail(email)
+                .orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
         patientRepository.editPatientData(patient, newPatient);
     }
 
@@ -23,8 +24,8 @@ public class PatientService {
     }
 
     public Patient getPatientByEmail(String email) {
-        //      PatientValidator.validatePatient(patient);
-        return patientRepository.findPatientByEmail(email).orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
+        return patientRepository.findPatientByEmail(email)
+                .orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
     }
 
     public void addPatient(Patient patient) {
@@ -34,12 +35,14 @@ public class PatientService {
     }
 
     public void deletePatient(String email) {
-        patientRepository.findPatientByEmail(email).orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
+        patientRepository.findPatientByEmail(email)
+                .orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
         patientRepository.deletePatient(email);
     }
 
     public void editPasswordByEmail(String email, String newPassword) {
-        Patient patient = patientRepository.findPatientByEmail(email).orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
+        Patient patient = patientRepository.findPatientByEmail(email)
+                .orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
         patientRepository.editPassword(patient, newPassword);
     }
 }

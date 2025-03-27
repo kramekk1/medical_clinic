@@ -16,12 +16,6 @@ public final class PatientValidator {
             throw new PatientEmailDuplicateException("Patient with this email already exist", HttpStatus.BAD_REQUEST);
         }
     }
-//
-//    public static void validateEmailNotNull(Patient patient) {
-//        if (patient.getEmail() == null) {
-//            throw new IllegalArgumentException("Patient email is null");
-//        }
-//    }
 
     public static void validateNullField(Patient newPatient) {
         if (newPatient.getEmail() == null || newPatient.getBirthday() == null || newPatient.getPassword() == null ||

@@ -17,7 +17,8 @@ public class InstitutionService {
     }
 
     public void delete(String institutionName) {
-        institutionRepository.findByName(institutionName).orElseThrow(() -> new InstitutionNotFoundException("Institution with this name not exist", HttpStatus.NOT_FOUND));
+        institutionRepository.findByName(institutionName)
+                .orElseThrow(() -> new InstitutionNotFoundException("Institution with this name not exist", HttpStatus.NOT_FOUND));
         institutionRepository.delete(institutionName);
     }
 
