@@ -19,15 +19,18 @@ public class PatientController {
     }
 
     @GetMapping("/{email}") // pobierz zasób z serwera na podstawie adresu email przekazanego w ścieżce -> @PathVariable
-    public Patient getPatientByEmail(@PathVariable String email) {
-        return patientService.getPatientByEmail(email);
+    public PatientDTO getPatientByEmail(@PathVariable String email) {
+        Patient patient = patientService.getPatientByEmail(email);
+        return new PatientDTO(patient.getEmail(), patient.getFirstName(), patient.getLastName(),
+                patient.getPhoneNumber(), patient.getBirthday());
     }
 
     @ResponseStatus(HttpStatus.CREATED) // zwrocenie statusu http 201 CREATED
     @PostMapping() // utworz zasob na serwerze pod sciezka
-    public Patient addPatient(@RequestBody Patient patient) { // @RequestBody pobierze przekazane przez zapytanie body i na jego podstawie utworzy obiekt Patient
+    public PatientDTO addPatient(@RequestBody Patient patient) { // @RequestBody pobierze przekazane przez zapytanie body i na jego podstawie utworzy obiekt Patient
         patientService.addPatient(patient);
-        return patient;
+        return new PatientDTO(patient.getEmail(), patient.getFirstName(), patient.getLastName(),
+                patient.getPhoneNumber(), patient.getBirthday());
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
