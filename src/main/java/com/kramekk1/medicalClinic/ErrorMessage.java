@@ -12,5 +12,5 @@ import java.time.LocalDateTime;
 public class ErrorMessage {
     private String message;
     private HttpStatus httpStatus;
-    LocalDateTime occuredAt;
+    private LocalDateTime occuredAt;
 }

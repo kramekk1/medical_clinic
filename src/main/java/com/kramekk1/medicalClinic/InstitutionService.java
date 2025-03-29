@@ -12,8 +12,10 @@ public class InstitutionService {
 
     private final InstitutionRepository institutionRepository;
 
-    public List<Institution> getAll() {
-        return institutionRepository.getAll();
+    public List<InstitutionDTO> getAll() {
+        return institutionRepository.getAll().stream()
+                .map(InstitutionMapper::convertToDTO)
+                .toList();
     }
 
     public void delete(String institutionName) {
@@ -22,9 +24,11 @@ public class InstitutionService {
         institutionRepository.delete(institutionName);
     }
 
-    public void add(Institution institution) {
-        InstitutionValidator.validateInstitutionFields(institution);
-        InstitutionValidator.validateInstitutionNameDuplicate(institution, institutionRepository);
-        institutionRepository.add(institution);
+    public InstitutionDTO add(CreateInstitutionCommand institution) {
+        Institution institutionToEntity = InstitutionMapper.convertToEntity(institution);
+        InstitutionValidator.validateInstitutionFields(institutionToEntity);
+        InstitutionValidator.validateInstitutionNameDuplicate(institutionToEntity, institutionRepository);
+        institutionRepository.add(institutionToEntity);
+        return InstitutionMapper.convertToDTO(institution);
     }
 }

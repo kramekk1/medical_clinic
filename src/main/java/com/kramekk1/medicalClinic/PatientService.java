@@ -12,26 +12,33 @@ import java.util.List;
 public class PatientService {
     private final PatientRepository patientRepository; // pole finalne ktore pobierze @ReqArgConst, ktore jest beanem i zostanie wstrzykniete w ta klase
 
-    public void editPatientByEmail(String email, Patient newPatient) {
-        PatientValidator.validateNullField(newPatient);
-        Patient patient = patientRepository.findPatientByEmail(email)
+    public void editPatientByEmail(String email, EditPatientCommand patient) {
+        Patient newPatientToEntity = PatientMapper.convertToEntity(patient);
+        PatientValidator.validateNullField(newPatientToEntity);
+        Patient foundPatient = patientRepository.findPatientByEmail(email)
                 .orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
-        patientRepository.editPatientData(patient, newPatient);
+        patientRepository.editPatientData(foundPatient, newPatientToEntity);
     }
 
-    public List<Patient> getPatients() {
-        return patientRepository.getPatients();
+    public List<PatientDTO> getPatients() {
+        return patientRepository.getPatients()
+                .stream()
+                .map(PatientMapper::convertToDTO)
+                .toList();
     }
 
-    public Patient getPatientByEmail(String email) {
+    public PatientDTO getPatientByEmail(String email) {
         return patientRepository.findPatientByEmail(email)
+                .map(PatientMapper::convertToDTO)
                 .orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
     }
 
-    public void addPatient(Patient patient) {
-        PatientValidator.validateNullField(patient);
+    public PatientDTO addPatient(CreatePatientCommand patient) {
+        Patient patientToEntity = PatientMapper.convertToEntity(patient);
+        PatientValidator.validateNullField(patientToEntity);
         PatientValidator.validateEmailDuplicate(patient.getEmail(), patientRepository);
-        patientRepository.addPatient(patient);
+        patientRepository.addPatient(patientToEntity);
+        return PatientMapper.convertToDTO(patient);
     }
 
     public void deletePatient(String email) {

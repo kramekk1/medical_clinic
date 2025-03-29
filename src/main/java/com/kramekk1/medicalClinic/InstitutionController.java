@@ -14,7 +14,7 @@ public class InstitutionController {
     private final InstitutionService institutionService;
 
     @GetMapping
-    public List<Institution> getAll() {
+    public List<InstitutionDTO> getAll() {
         return institutionService.getAll();
     }
 
@@ -26,8 +26,7 @@ public class InstitutionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Institution add(@RequestBody Institution institution) {
-        institutionService.add(institution);
-        return institution;
+    public InstitutionDTO add(@RequestBody CreateInstitutionCommand institution) {
+        return institutionService.add(institution);
     }
 }
