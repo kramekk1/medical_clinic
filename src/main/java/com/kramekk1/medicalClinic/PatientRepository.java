@@ -33,9 +33,7 @@ public class PatientRepository {
         patients.removeIf(patient -> email.equals(patient.getEmail()));
     }
 
-    public void editPatientByEmail(String email, Patient newPatient) {
-        Patient patient = findPatientByEmail(email).orElseThrow(() -> new IllegalArgumentException("Patient not found"));
-
+    public void editPatientData(Patient patient, Patient newPatient) {
         patient.setFirstName(newPatient.getFirstName());
         patient.setLastName(newPatient.getLastName());
         patient.setBirthday(newPatient.getBirthday());
@@ -44,4 +42,7 @@ public class PatientRepository {
         patient.setPhoneNumber(newPatient.getPhoneNumber());
     }
 
+    public void editPassword(Patient patient, String newPassword) {
+        patient.setPassword(newPassword);
+    }
 }
