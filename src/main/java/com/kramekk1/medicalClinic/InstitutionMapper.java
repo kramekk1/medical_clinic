@@ -1,6 +1,10 @@
 package com.kramekk1.medicalClinic;
 
-public class InstitutionMapper {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class InstitutionMapper {
 
     public static InstitutionDTO convertToDTO(Institution institution) {
         return new InstitutionDTO(institution.getName(), institution.getPostalCode(), institution.getAddress());

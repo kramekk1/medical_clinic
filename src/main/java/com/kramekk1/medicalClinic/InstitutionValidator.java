@@ -1,8 +1,11 @@
 package com.kramekk1.medicalClinic;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-public class InstitutionValidator {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class InstitutionValidator {
 
     public static void validateInstitutionFields(Institution institution) {
         if (institution.getName() == null || institution.getPostalCode() == null || institution.getAddress() == null) {

@@ -36,6 +36,7 @@ public class PatientController {
         patientService.editPatientByEmail(email, patient);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{email}") // usuwanie zasobu na podstawie sciezki /{email}
     public void deletePatient(@PathVariable String email) {
         patientService.deletePatient(email);

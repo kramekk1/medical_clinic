@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class MedicalClinicExceptionHandler {
 
     @ExceptionHandler(MedicalClinicException.class)
-    protected ResponseEntity<ErrorMessage> handlePatientNotFoundException(PatientNotFoundException ex) {
+    protected ResponseEntity<ErrorMessage> handleException(MedicalClinicException ex) {
         ErrorMessage errorMessage = new ErrorMessage(ex.getMessage(), ex.getHttpStatus(), LocalDateTime.now());
         return new ResponseEntity<>(errorMessage, errorMessage.getHttpStatus());
     }

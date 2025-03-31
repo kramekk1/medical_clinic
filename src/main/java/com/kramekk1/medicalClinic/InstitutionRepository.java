@@ -18,7 +18,9 @@ public class InstitutionRepository {
     }
 
     public Optional<Institution> findByName(String name) {
-        return institutions.stream().filter(institution -> name.equals(institution.getName())).findFirst();
+        return institutions.stream()
+                .filter(institution -> name.equals(institution.getName()))
+                .findFirst();
     }
 
     public void delete(String institutionName) {

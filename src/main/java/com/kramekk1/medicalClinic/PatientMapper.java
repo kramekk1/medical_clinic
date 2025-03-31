@@ -1,6 +1,10 @@
 package com.kramekk1.medicalClinic;
 
-public class PatientMapper {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class PatientMapper {
 
     public static PatientDTO convertToDTO(Patient patient) {
         return new PatientDTO(patient.getEmail(), patient.getFirstName(), patient.getLastName(),
