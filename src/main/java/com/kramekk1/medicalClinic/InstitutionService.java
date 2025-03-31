@@ -11,10 +11,11 @@ import java.util.List;
 public class InstitutionService {
 
     private final InstitutionRepository institutionRepository;
+    private final InstitutionMapperMapStruct institutionMapper;
 
     public List<InstitutionDTO> getAll() {
         return institutionRepository.getAll().stream()
-                .map(InstitutionMapper::convertToDTO)
+                .map(institutionMapper::toDTO)
                 .toList();
     }
 
@@ -25,10 +26,10 @@ public class InstitutionService {
     }
 
     public InstitutionDTO add(CreateInstitutionCommand institution) {
-        Institution institutionToEntity = InstitutionMapper.convertToEntity(institution);
+        Institution institutionToEntity = institutionMapper.toEntity(institution);
         InstitutionValidator.validateInstitutionFields(institutionToEntity);
         InstitutionValidator.validateInstitutionNameDuplicate(institutionToEntity, institutionRepository);
         institutionRepository.add(institutionToEntity);
-        return InstitutionMapper.convertToDTO(institution);
+        return institutionMapper.toDTO(institution);
     }
 }
