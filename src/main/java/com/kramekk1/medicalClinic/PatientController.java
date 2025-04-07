@@ -29,11 +29,10 @@ public class PatientController {
         return patientService.addPatient(patient);
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     // zwrocenie statusu 204 NO CONTENT gdy zamowienie sie przetworzy i nie jest przewidziana zadna tresc odpowiedz w body
     @PutMapping("/{email}") // calosciowa edycja istniejacego zasobu
-    public void updatePatient(@PathVariable String email, @RequestBody EditPatientCommand patient) {
-        patientService.editPatientByEmail(email, patient);
+    public PatientDTO updatePatient(@PathVariable String email, @RequestBody EditPatientCommand patient) {
+        return patientService.editPatientByEmail(email, patient);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

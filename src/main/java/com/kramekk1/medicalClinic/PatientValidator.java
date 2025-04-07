@@ -10,7 +10,7 @@ import java.util.Optional;
 public final class PatientValidator {
 
     public static void validateEmailDuplicate(String email, PatientRepository patientRepository) {
-        Optional<Patient> patient = patientRepository.findPatientByEmail(email);
+        Optional<Patient> patient = patientRepository.findByEmail(email);
 
         if (patient.isPresent()) {
             throw new PatientEmailDuplicateException("Patient with this email already exist", HttpStatus.BAD_REQUEST);
