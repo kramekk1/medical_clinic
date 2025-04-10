@@ -60,4 +60,13 @@ public class PatientService {
         patient.updatePassword(newPassword);
         patientRepository.save(patient);
     }
+
+    public PatientDTO register(RegisterPatientCommand command) {
+        Patient patientEntity = patientMapper.toEntity(command);
+        PatientValidator.validateNullField(patientEntity);
+        PatientValidator.validateEmailDuplicate(command.getEmail(), patientRepository);
+
+        patientEntity.register(command);
+        return patientMapper.toDTO(patientRepository.save(patientEntity));
+    }
 }

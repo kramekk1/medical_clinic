@@ -18,8 +18,9 @@ public final class PatientValidator {
     }
 
     public static void validateNullField(Patient newPatient) {
-        if (newPatient.getEmail() == null || newPatient.getBirthday() == null || newPatient.getPassword() == null ||
-                newPatient.getFirstName() == null || newPatient.getLastName() == null || newPatient.getIdCardNo() == null || newPatient.getPhoneNumber() == null) {
+        if (newPatient.getEmail() == null || newPatient.getBirthday() == null || newPatient.getUser().getUsername() == null ||
+                newPatient.getUser().getPassword() == null || newPatient.getFirstName() == null ||
+                newPatient.getLastName() == null || newPatient.getIdCardNo() == null || newPatient.getPhoneNumber() == null) {
             throw new PatientDataFieldNullException("One or more patient data field is null", HttpStatus.BAD_REQUEST);
         }
     }

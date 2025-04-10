@@ -23,11 +23,11 @@ public class PatientController {
         return patientService.getPatientByEmail(email);
     }
 
-    @ResponseStatus(HttpStatus.CREATED) // zwrocenie statusu http 201 CREATED
-    @PostMapping() // utworz zasob na serwerze pod sciezka
-    public PatientDTO addPatient(@RequestBody CreatePatientCommand patient) { // @RequestBody pobierze przekazane przez zapytanie body i na jego podstawie utworzy obiekt Patient
-        return patientService.addPatient(patient);
-    }
+//    @ResponseStatus(HttpStatus.CREATED) // zwrocenie statusu http 201 CREATED
+//    @PostMapping() // utworz zasob na serwerze pod sciezka
+//    public PatientDTO addPatient(@RequestBody CreatePatientCommand patient) { // @RequestBody pobierze przekazane przez zapytanie body i na jego podstawie utworzy obiekt Patient
+//        return patientService.addPatient(patient);
+//    }
 
     // zwrocenie statusu 204 NO CONTENT gdy zamowienie sie przetworzy i nie jest przewidziana zadna tresc odpowiedz w body
     @PutMapping("/{email}") // calosciowa edycja istniejacego zasobu
@@ -45,5 +45,11 @@ public class PatientController {
     @PatchMapping("/{email}")
     public void editPasswordByEmail(@PathVariable String email, @RequestBody PatientPassword newPassword) {
         patientService.editPasswordByEmail(email, newPassword.getPassword());
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public PatientDTO register(@RequestBody RegisterPatientCommand command) {
+        return patientService.register(command);
     }
 }

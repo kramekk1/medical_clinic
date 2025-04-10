@@ -17,16 +17,19 @@ public class Patient {
     private Long id;
 
     private String email;
-    private String password;
     private String idCardNo;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private LocalDate birthday;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    private User user;
+
     public void update(Patient sourcePatient) {
         this.email = sourcePatient.getEmail();
-        this.password = sourcePatient.getPassword();
+        this.user = sourcePatient.getUser();
         this.idCardNo = sourcePatient.getIdCardNo();
         this.firstName = sourcePatient.getFirstName();
         this.lastName = sourcePatient.getLastName();
@@ -35,7 +38,25 @@ public class Patient {
     }
 
     public void updatePassword(String newPassword) {
-        this.password = newPassword;
+        if (user != null) {
+            user.setPassword(newPassword);
+        }
+    }
+
+    public void register(RegisterPatientCommand command) {
+        User user = new User();
+        user.setUsername(command.getUsername());
+        user.setPassword(command.getPassword());
+
+        Patient patient = new Patient();
+        patient.setEmail(command.getEmail());
+        patient.setIdCardNo(command.getIdCardNo());
+        patient.setFirstName(command.getFirstName());
+        patient.setLastName(command.getLastName());
+        patient.setPhoneNumber(command.getPhoneNumber());
+        patient.setBirthday(command.getBirthday());
+
+        patient.setUser(user);
     }
 }
 

@@ -10,8 +10,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @ToString
 public class EditPatientCommand {
-    private String email;
+    private String username;
     private String password;
+    private String email;
     private String idCardNo;
     private String firstName;
     private String lastName;
