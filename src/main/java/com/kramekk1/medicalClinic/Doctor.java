@@ -1,11 +1,10 @@
 package com.kramekk1.medicalClinic;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,6 +22,14 @@ public class Doctor {
     private String firstname;
     private String surname;
     private SpecializationType specializationType;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "doctor_institution",
+            joinColumns = @JoinColumn(name = "doctor_id"),
+            inverseJoinColumns = @JoinColumn(name = "institution_id")
+    )
+    private List<Institution> institution;
 
     public void update(UpdateDoctorCommand command) {
         this.email = command.getEmail();

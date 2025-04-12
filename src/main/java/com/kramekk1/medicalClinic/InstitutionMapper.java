@@ -3,7 +3,7 @@ package com.kramekk1.medicalClinic;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface InstitutionMapperMapStruct {
+public interface InstitutionMapper {
 
     InstitutionDTO toDTO(Institution institution);
 
