@@ -20,13 +20,13 @@ public class InstitutionController {
 
     @DeleteMapping("/{institutionName}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable String institutionName) {
-        institutionService.delete(institutionName);
+    public void deleteById(@PathVariable Long id) {
+        institutionService.deleteById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public InstitutionDTO add(@RequestBody CreateInstitutionCommand institution) {
-        return institutionService.add(institution);
+    public InstitutionDTO create(@RequestBody CreateInstitutionCommand command) {
+        return institutionService.create(command);
     }
 }
