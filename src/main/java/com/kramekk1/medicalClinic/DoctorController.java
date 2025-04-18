@@ -30,7 +30,7 @@ public class DoctorController {
     }
 
     @PutMapping("/{id}")
-    public DoctorDTO updateByID(@RequestBody UpdateDoctorCommand command, @PathVariable Long id) {
+    public DoctorDTO updateById(@RequestBody UpdateDoctorCommand command, @PathVariable Long id) {
         return doctorService.update(command, id);
     }
 
@@ -38,6 +38,11 @@ public class DoctorController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id) {
         doctorService.deleteById(id);
+    }
+
+    @PatchMapping("/{doctorId}")
+    public DoctorDTO addInstitutionById(@PathVariable Long doctorId, @RequestBody AddInstitutionToDoctorCommand command) {
+        return doctorService.addInstitutionToDoctorById(doctorId, command.getInstitutionId());
     }
 
 }

@@ -1,19 +1,18 @@
 package com.kramekk1.medicalClinic;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.List;
-
+@AllArgsConstructor
+@ToString
 @Getter
 @Setter
-@ToString
-public class UpdateDoctorCommand {
+public class SimpleDoctorDTO {
+    private Long id;
     private String email;
-    private String password;
     private String firstname;
     private String surname;
     private SpecializationType specializationType;
-    private List<Long> institutionIds;
 }

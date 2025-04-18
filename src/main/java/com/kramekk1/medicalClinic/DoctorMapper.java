@@ -8,4 +8,7 @@ public interface DoctorMapper {
     DoctorDTO toDTO(Doctor doctor);
 
     Doctor toEntity(CreateDoctorCommand command);
+
+    SimpleDoctorDTO toDTO(DoctorDTO doctorDTO);
+
 }

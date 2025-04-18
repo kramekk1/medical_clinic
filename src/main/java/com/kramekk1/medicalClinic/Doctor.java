@@ -1,9 +1,8 @@
 package com.kramekk1.medicalClinic;
 
-
 import jakarta.persistence.*;
 import lombok.*;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -21,6 +20,8 @@ public class Doctor {
     private String password;
     private String firstname;
     private String surname;
+
+    @Enumerated(value = EnumType.STRING)
     private SpecializationType specializationType;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -29,7 +30,7 @@ public class Doctor {
             joinColumns = @JoinColumn(name = "doctor_id"),
             inverseJoinColumns = @JoinColumn(name = "institution_id")
     )
-    private List<Institution> institution;
+    private List<Institution> institutions = new ArrayList<>();
 
     public void update(UpdateDoctorCommand command) {
         this.email = command.getEmail();
@@ -37,5 +38,32 @@ public class Doctor {
         this.firstname = command.getFirstname();
         this.surname = command.getSurname();
         this.specializationType = command.getSpecializationType();
+    }
+
+    public void addInstitutionToDoctor(Institution institution) {
+        this.institutions.add(institution);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Doctor))
+            return false;
+
+        Doctor other = (Doctor) o;
+
+        return id != null &&
+                id.equals(other.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Doctor{" +
+                "id=" + id;
     }
 }

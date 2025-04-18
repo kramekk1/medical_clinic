@@ -12,10 +12,11 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 public class InstitutionDTO {
+    private Long id;
     private String name;
     private String postalCode;
     private String address;
     private String street;
     private String buildingNumber;
-    private List<Doctor> doctors;
+    private List<SimpleDoctorDTO> doctors;
 }

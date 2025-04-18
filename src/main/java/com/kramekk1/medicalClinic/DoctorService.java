@@ -11,6 +11,7 @@ import java.util.List;
 public class DoctorService {
 
     private final DoctorRepository doctorRepository;
+    private final InstitutionRepository institutionRepository;
     private final DoctorMapper doctorMapper;
 
     public DoctorDTO create(CreateDoctorCommand command) {
@@ -30,14 +31,16 @@ public class DoctorService {
 
     public DoctorDTO getById(Long id) {
         Doctor doctor = doctorRepository.findById(id)
-                .orElseThrow(() -> new DoctorNotFoundException("Doctor with this ID " + id +" not found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new DoctorNotFoundException("Doctor with this ID " + id + " not found", HttpStatus.NOT_FOUND));
         return doctorMapper.toDTO(doctor);
     }
 
     public DoctorDTO update(UpdateDoctorCommand command, Long id) {
         DoctorValidator.validateNullField(command);
         Doctor foundedDoctor = doctorRepository.findById(id)
-                .orElseThrow(() -> new DoctorNotFoundException("Doctor with this ID " + id +" not found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new DoctorNotFoundException("Doctor with this ID " + id + " not found", HttpStatus.NOT_FOUND));
+
+        foundedDoctor.setInstitutions(institutionRepository.findAllById(command.getInstitutionIds()));
 
         foundedDoctor.update(command);
         return doctorMapper.toDTO(doctorRepository.save(foundedDoctor));
@@ -45,8 +48,20 @@ public class DoctorService {
 
     public void deleteById(Long id) {
         doctorRepository.findById(id)
-                        .orElseThrow(() -> new DoctorNotFoundException("Doctor with this ID " + id +" not found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new DoctorNotFoundException("Doctor with this ID " + id + " not found", HttpStatus.NOT_FOUND));
 
         doctorRepository.deleteById(id);
+    }
+
+    public DoctorDTO addInstitutionToDoctorById(Long doctorId, Long institutionId) {
+        Doctor foundedDoctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new DoctorNotFoundException("Doctor with this ID " + doctorId + " not found", HttpStatus.NOT_FOUND));
+
+        Institution foundedInstitution = institutionRepository.findById(institutionId)
+                .orElseThrow(() -> new InstitutionNotFoundException("Institution with this ID " + institutionId + " not found", HttpStatus.NOT_FOUND));
+
+        foundedDoctor.addInstitutionToDoctor(foundedInstitution);
+
+        return doctorMapper.toDTO(doctorRepository.save(foundedDoctor));
     }
 }

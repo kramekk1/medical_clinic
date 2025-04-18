@@ -17,5 +17,8 @@ public class DoctorDTO {
     private String firstname;
     private String surname;
     private SpecializationType specializationType;
-    private List<Institution> institutions;
+    private List<SimpleInstitutionDTO> institutions;
+
 }
+
+
