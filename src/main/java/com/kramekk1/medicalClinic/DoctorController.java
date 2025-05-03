@@ -44,5 +44,4 @@ public class DoctorController {
     public DoctorDTO addInstitutionById(@PathVariable Long doctorId, @RequestBody AddInstitutionToDoctorCommand command) {
         return doctorService.addInstitutionToDoctorById(doctorId, command.getInstitutionId());
     }
-
 }

@@ -11,5 +11,4 @@ public interface InstitutionMapper {
 
     Institution toEntity(CreateInstitutionCommand institutionCommand);
 
-    SimpleInstitutionDTO toDTO(InstitutionDTO institutionDTO);
 }

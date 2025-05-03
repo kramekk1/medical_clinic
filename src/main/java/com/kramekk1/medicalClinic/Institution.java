@@ -8,7 +8,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -34,4 +33,6 @@ public class Institution {
         return "Institution{" +
                 "id=" + id;
     }
+
+
 }

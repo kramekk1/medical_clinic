@@ -32,6 +32,9 @@ public class Doctor {
     )
     private List<Institution> institutions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
+    private List<Visit> visit;
+
     public void update(UpdateDoctorCommand command) {
         this.email = command.getEmail();
         this.password = command.getPassword();

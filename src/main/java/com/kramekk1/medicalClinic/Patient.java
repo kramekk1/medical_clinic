@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,6 +27,9 @@ public class Patient {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id",referencedColumnName = "id")
     private User user;
+
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    private List<Visit> visit;
 
     public void update(Patient sourcePatient) {
         this.email = sourcePatient.getEmail();

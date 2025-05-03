@@ -15,7 +15,7 @@ public class PatientController {
 
     @GetMapping // pobierz zasób z serwera
     public List<PatientDTO> getPatients() {
-        return patientService.getPatients();
+        return patientService.getAll();
     }
 
     @GetMapping("/{email}") // pobierz zasób z serwera na podstawie adresu email przekazanego w ścieżce -> @PathVariable
@@ -38,7 +38,7 @@ public class PatientController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{email}") // usuwanie zasobu na podstawie sciezki /{email}
     public void deletePatient(@PathVariable String email) {
-        patientService.deletePatient(email);
+        patientService.deleteByEmail(email);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

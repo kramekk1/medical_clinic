@@ -25,7 +25,7 @@ public class PatientService {
         return patientMapper.toDTO(patientRepository.save(foundPatient));
     }
 
-    public List<PatientDTO> getPatients() {
+    public List<PatientDTO> getAll() {
         return patientRepository.findAll()
                 .stream()
                 .map(patientMapper::toDTO)
@@ -38,15 +38,7 @@ public class PatientService {
                 .orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
     }
 
-    public PatientDTO addPatient(CreatePatientCommand patient) {
-        Patient patientToEntity = patientMapper.toEntity(patient);
-        PatientValidator.validateNullField(patientToEntity);
-        PatientValidator.validateEmailDuplicate(patient.getEmail(), patientRepository);
-        patientRepository.save(patientToEntity);
-        return patientMapper.toDTO(patient);
-    }
-
-    public void deletePatient(String email) {
+    public void deleteByEmail(String email) {
         Patient foundPatient = patientRepository.findByEmail(email)
                 .orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
 

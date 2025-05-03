@@ -30,7 +30,6 @@ public class InstitutionService {
         InstitutionValidator.validateInstitutionFields(institutionToEntity);
         InstitutionValidator.validateInstitutionNameDuplicate(institutionToEntity, institutionRepository);
 
-        institutionRepository.save(institutionToEntity);
-        return institutionMapper.toDTO(command);
+        return institutionMapper.toDTO(institutionRepository.save(institutionToEntity));
     }
 }
