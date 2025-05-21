@@ -64,9 +64,4 @@ public class Doctor {
         return getClass().hashCode();
     }
 
-    @Override
-    public String toString() {
-        return "Doctor{" +
-                "id=" + id;
-    }
 }

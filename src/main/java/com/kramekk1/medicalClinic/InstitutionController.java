@@ -18,10 +18,10 @@ public class InstitutionController {
         return institutionService.getAll();
     }
 
-    @DeleteMapping("/{institutionName}")
+    @DeleteMapping("/{institutionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Long id) {
-        institutionService.deleteById(id);
+    public void deleteById(@PathVariable Long institutionId) {
+        institutionService.deleteById(institutionId);
     }
 
     @PostMapping

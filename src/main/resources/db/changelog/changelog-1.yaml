@@ -1,0 +1,51 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Jakub
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: doctors
+      changes:
+        - createTable:
+            tableName: doctors
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: firstname
+                  type: varchar(250)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: surname
+                  type: varchar(250)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(250)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: Jakub
+      changes:
+        - insert:
+            tableName: doctors
+            columns:
+              - column:
+                  name: firstname
+                  value: "Adek"
+              - column:
+                  name: surname
+                  value: "Doe"
+              - column:
+                  name: email
+                  value: "doe@sample.com"
