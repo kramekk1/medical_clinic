@@ -1,5 +1,6 @@
 package com.kramekk1.medicalClinic;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final PatientMapperMapStruct patientMapper;
 
+    @Transactional
     public PatientDTO editPatientByEmail(String email, EditPatientCommand patient) {
         Patient deliveredPatientToEntity = patientMapper.toEntity(patient);
         PatientValidator.validateNullField(deliveredPatientToEntity);
@@ -38,6 +40,7 @@ public class PatientService {
                 .orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
     }
 
+    @Transactional
     public void deleteByEmail(String email) {
         Patient foundPatient = patientRepository.findByEmail(email)
                 .orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
@@ -45,6 +48,7 @@ public class PatientService {
         patientRepository.delete(foundPatient);
     }
 
+    @Transactional
     public void editPasswordByEmail(String email, String newPassword) {
         Patient patient = patientRepository.findByEmail(email)
                 .orElseThrow(() -> new PatientNotFoundException("Patient with email " + email + " not found", HttpStatus.NOT_FOUND));
@@ -53,6 +57,7 @@ public class PatientService {
         patientRepository.save(patient);
     }
 
+    @Transactional
     public PatientDTO register(RegisterPatientCommand command) {
         Patient patientEntity = patientMapper.toEntity(command);
         PatientValidator.validateNullField(patientEntity);

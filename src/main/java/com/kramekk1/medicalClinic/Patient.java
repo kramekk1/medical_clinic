@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @Entity
+@Table(name = "patients")
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +34,10 @@ public class Patient {
 
     public void update(Patient sourcePatient) {
         this.email = sourcePatient.getEmail();
-        this.user = sourcePatient.getUser();
+        if (sourcePatient != null) {
+            this.user.setUsername(sourcePatient.getUser().getUsername());
+            this.user.setPassword(sourcePatient.getUser().getPassword());
+        }
         this.idCardNo = sourcePatient.getIdCardNo();
         this.firstName = sourcePatient.getFirstName();
         this.lastName = sourcePatient.getLastName();

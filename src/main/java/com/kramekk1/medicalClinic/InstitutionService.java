@@ -1,5 +1,6 @@
 package com.kramekk1.medicalClinic;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,12 +20,14 @@ public class InstitutionService {
                 .toList();
     }
 
+    @Transactional
     public void deleteById(Long id) {
         institutionRepository.findById(id)
-                .orElseThrow(() -> new InstitutionNotFoundException("Institution with this name not exist", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new InstitutionNotFoundException("Institution with this ID" + id + " not exist", HttpStatus.NOT_FOUND));
         institutionRepository.deleteById(id);
     }
 
+    @Transactional
     public InstitutionDTO create(CreateInstitutionCommand command) {
         Institution institutionToEntity = institutionMapper.toEntity(command);
         InstitutionValidator.validateInstitutionFields(institutionToEntity);

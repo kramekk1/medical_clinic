@@ -1,5 +1,6 @@
 package com.kramekk1.medicalClinic;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ public class DoctorService {
     private final InstitutionRepository institutionRepository;
     private final DoctorMapper doctorMapper;
 
+    @Transactional
     public DoctorDTO create(CreateDoctorCommand command) {
         DoctorValidator.validateNullField(command);
         DoctorValidator.validateEmailDuplicate(command.getEmail(), doctorRepository);
@@ -35,6 +37,7 @@ public class DoctorService {
         return doctorMapper.toDTO(doctor);
     }
 
+    @Transactional
     public DoctorDTO update(UpdateDoctorCommand command, Long id) {
         DoctorValidator.validateNullField(command);
         Doctor foundedDoctor = doctorRepository.findById(id)
@@ -46,13 +49,15 @@ public class DoctorService {
         return doctorMapper.toDTO(doctorRepository.save(foundedDoctor));
     }
 
+    @Transactional
     public void deleteById(Long id) {
-        doctorRepository.findById(id)
+        Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new DoctorNotFoundException("Doctor with this ID " + id + " not found", HttpStatus.NOT_FOUND));
 
-        doctorRepository.deleteById(id);
+        doctorRepository.delete(doctor);
     }
 
+    @Transactional
     public DoctorDTO addInstitutionToDoctorById(Long doctorId, Long institutionId) {
         Doctor foundedDoctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new DoctorNotFoundException("Doctor with this ID " + doctorId + " not found", HttpStatus.NOT_FOUND));

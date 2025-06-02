@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -115,5 +117,35 @@ public class VisitServiceTest {
         visitService.deleteById(id);
 
         verify(visitRepository).deleteById(id);
+    }
+
+    @Test
+    void create_doctorNotExist_exceptionThrow() {
+        CreateVisitCommand command = new CreateVisitCommand(LocalDateTime.now(), LocalDateTime.now(), 1L);
+
+        when(doctorRepository.findById(any())).thenReturn(Optional.empty());
+
+        DoctorNotFoundException exception = assertThrows(DoctorNotFoundException.class, () -> visitService.create(command));
+        assertEquals("Doctor with this ID " + 1L + " not exist", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+    }
+
+    @Test
+    void assignPatient_patientNotExist_exceptionThrow() {
+        when(patientRepository.findById(any())).thenReturn(Optional.empty());
+
+        PatientNotFoundException exception = assertThrows(PatientNotFoundException.class, () -> visitService.assignPatient(1L, 1L));
+        assertEquals("Patient with this ID " + 1L + " not exist", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+    }
+
+    @Test
+    void assignPatient_visitNotExist_exceptionThrow() {
+        when(patientRepository.findById(any())).thenReturn(Optional.of(new Patient()));
+        when(visitRepository.findById(any())).thenReturn(Optional.empty());
+
+        VisitNotFoundException exception = assertThrows(VisitNotFoundException.class, () -> visitService.assignPatient(1L, 1L));
+        assertEquals("Visit with this ID " + 1L + " not exist", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
     }
 }

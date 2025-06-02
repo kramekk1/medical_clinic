@@ -1,5 +1,6 @@
 package com.kramekk1.medicalClinic;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ public class VisitService {
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
 
+    @Transactional
     public VisitDTO create(CreateVisitCommand command) {
         Doctor doctor = doctorRepository.findById(command.getDoctorId())
                 .orElseThrow(() -> new DoctorNotFoundException("Doctor with this ID " + command.getDoctorId() + " not exist", HttpStatus.NOT_FOUND));
@@ -27,6 +29,7 @@ public class VisitService {
         return visitMapper.toDTO(visitRepository.save(visit));
     }
 
+    @Transactional
     public VisitDTO assignPatient(Long visitId, Long patientId) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new PatientNotFoundException("Patient with this ID " + patientId + " not exist", HttpStatus.NOT_FOUND));
@@ -55,6 +58,7 @@ public class VisitService {
                 .toList();
     }
 
+    @Transactional
     public void deleteById(Long id) {
         visitRepository.deleteById(id);
     }

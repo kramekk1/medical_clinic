@@ -1,5 +1,6 @@
 package com.kramekk1.medicalClinic;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +18,12 @@ public class UserService {
                 .map(userMapper::toDTO)
                 .toList();
     }
+
+    @Transactional
     public UserDTO add(CreateUserCommand command) {
         User userEntity = userMapper.toEntity(command);
         return userMapper.toDTO(userRepository.save(userEntity));
     }
+
 
 }

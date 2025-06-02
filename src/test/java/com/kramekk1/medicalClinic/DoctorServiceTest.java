@@ -5,12 +5,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -84,7 +86,7 @@ public class DoctorServiceTest {
     @Test
     void create_createCommandExist_doctorDtoReturned() {
         //given
-        CreateDoctorCommand command = new CreateDoctorCommand("email", "password", "firstname", "surname",SpecializationType.CARDIO);
+        CreateDoctorCommand command = new CreateDoctorCommand("email", "password", "firstname", "surname", SpecializationType.CARDIO);
         Doctor doctor = doctorMapper.toEntity(command);
         Long id = doctor.getId();
 
@@ -108,7 +110,7 @@ public class DoctorServiceTest {
     @Test
     void update_updateCommandExist_doctorDtoReturned() {
         //given
-        UpdateDoctorCommand command = new UpdateDoctorCommand("email", "password", "firstname", "surname",SpecializationType.CARDIO, new ArrayList<>());
+        UpdateDoctorCommand command = new UpdateDoctorCommand("email", "password", "firstname", "surname", SpecializationType.CARDIO, new ArrayList<>());
         Long id = 1L;
         Doctor doctor = new Doctor(1L, "email", "password", "firstname", "surname", SpecializationType.CARDIO, new ArrayList<>(), new ArrayList<>());
         Institution institution = new Institution(1L, "name", "city", "address", "postalCode", "street", "buildingNumber", new ArrayList<>());
@@ -132,7 +134,7 @@ public class DoctorServiceTest {
                 () -> assertEquals(2, result.getInstitutions().size()),
                 () -> assertEquals(1L, result.getInstitutions().get(0).getId()),
                 () -> assertEquals(2L, result.getInstitutions().get(1).getId())
-                );
+        );
     }
 
     @Test
@@ -168,7 +170,54 @@ public class DoctorServiceTest {
 
         doctorService.deleteById(id);
 
-        verify(doctorRepository).deleteById(id);
+        verify(doctorRepository).delete(doctor);
     }
 
+    @Test
+    void getById_doctorNotExist_exceptionThrow() {
+        when(doctorRepository.findById(any())).thenReturn(Optional.empty());
+
+        DoctorNotFoundException exception = assertThrows(DoctorNotFoundException.class, () -> doctorService.getById(1L));
+
+        assertEquals("Doctor with this ID " + 1L + " not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+    }
+
+    @Test
+    void update_doctorNotExist_exceptionThrow() {
+        UpdateDoctorCommand command = new UpdateDoctorCommand("email", "password", "firstname", "surname", SpecializationType.CARDIO, new ArrayList<>());
+        when(doctorRepository.findById(any())).thenReturn(Optional.empty());
+
+        DoctorNotFoundException exception = assertThrows(DoctorNotFoundException.class, () -> doctorService.update(command, 1L));
+        assertEquals("Doctor with this ID " + 1L + " not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+    }
+
+    @Test
+    void deleteById_doctorNotExist_exceptionThrow() {
+        when(doctorRepository.findById(any())).thenReturn(Optional.empty());
+
+        DoctorNotFoundException exception = assertThrows(DoctorNotFoundException.class, () -> doctorService.deleteById(1L));
+        assertEquals("Doctor with this ID " + 1L + " not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+    }
+
+    @Test
+    void addInstitutionToDoctorById_doctorNotExist_exceptionThrow() {
+        when(doctorRepository.findById(any())).thenReturn(Optional.empty());
+
+        DoctorNotFoundException docException = assertThrows(DoctorNotFoundException.class, () -> doctorService.addInstitutionToDoctorById(1L, 1L));
+        assertEquals("Doctor with this ID " + 1L + " not found", docException.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, docException.getHttpStatus());
+    }
+
+    @Test
+    void addInstitutionToDoctorById_institutionNotExist_exceptionThrow() {
+        when(doctorRepository.findById(any())).thenReturn(Optional.of(new Doctor()));
+        when(institutionRepository.findById(any())).thenReturn(Optional.empty());
+
+        InstitutionNotFoundException instException = assertThrows(InstitutionNotFoundException.class, () -> doctorService.addInstitutionToDoctorById(1L, 1L));
+        assertEquals("Institution with this ID " + 1L + " not found", instException.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, instException.getHttpStatus());
+    }
 }

@@ -5,12 +5,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -72,5 +74,14 @@ public class InstitutionServiceTest {
         institutionService.deleteById(id);
 
         verify(institutionRepository).deleteById(institution.getId());
+    }
+
+    @Test
+    void deleteById_institutionNotExist_exceptionThrow() {
+        when(institutionRepository.findById(any())).thenReturn(Optional.empty());
+
+        InstitutionNotFoundException exception = assertThrows(InstitutionNotFoundException.class, () -> institutionService.deleteById(1L));
+        assertEquals("Institution with this ID" + 1L + " not exist", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
     }
 }

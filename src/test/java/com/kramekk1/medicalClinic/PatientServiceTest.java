@@ -5,12 +5,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -116,4 +118,42 @@ public class PatientServiceTest {
                 () -> assertEquals("phoneNumber1", result.getPhoneNumber())
         );
     }
+
+    @Test
+    void editPatientByEmail_patientNotExist_exceptionThrow() {
+        EditPatientCommand command = new EditPatientCommand("username", "password", "email", "idCardNo", "firstname1", "lastname1", "phoneNumber1", LocalDate.now());
+        when(patientRepository.findByEmail(any())).thenReturn(Optional.empty());
+
+        PatientNotFoundException exception = assertThrows(PatientNotFoundException.class, () -> patientService.editPatientByEmail("emailToEdit", command));
+        assertEquals("Patient with email emailToEdit not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+    }
+
+    @Test
+    void getPatientByEmail_patientNotExist_exceptionThrow() {
+        when(patientRepository.findByEmail(any())).thenReturn(Optional.empty());
+
+        PatientNotFoundException exception = assertThrows(PatientNotFoundException.class, () -> patientService.getPatientByEmail("testEmail"));
+        assertEquals("Patient with email testEmail not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+    }
+
+    @Test
+    void deleteByEmail_patientNotExist_exceptionThrow() {
+        when(patientRepository.findByEmail(any())).thenReturn(Optional.empty());
+
+        PatientNotFoundException exception = assertThrows(PatientNotFoundException.class, () -> patientService.deleteByEmail("testEmail"));
+        assertEquals("Patient with email testEmail not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+    }
+
+    @Test
+    void editPasswordByEmail_patientNotExist_exceptionThrow() {
+        when(patientRepository.findByEmail(any())).thenReturn(Optional.empty());
+
+        PatientNotFoundException exception = assertThrows(PatientNotFoundException.class, () -> patientService.editPasswordByEmail("testEmail", "newPassword"));
+        assertEquals("Patient with email testEmail not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+    }
+
 }

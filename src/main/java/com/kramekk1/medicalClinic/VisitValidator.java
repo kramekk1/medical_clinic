@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class VisitValidator {
@@ -40,19 +41,19 @@ public final class VisitValidator {
     }
 
     public static void validateVisitsNotInTheSameTime(CreateVisitCommand command, VisitRepository visitRepository) {
-        Long doctorId = command.getDoctorId();
-        LocalDateTime commandStartAt = command.getStartAt();
-        LocalDateTime commandEndTime = command.getEndTime();
+//        Long doctorId = command.getDoctorId();
+//        LocalDateTime commandStartAt = command.getStartAt();
+//        LocalDateTime commandEndTime = command.getEndTime();
+//        boolean overlaps = visitRepository.findAll()
+//                .stream()
+//                .filter(visit -> doctorId.equals(visit.getDoctor().getId()))
+//                .anyMatch(visit ->
+//                        commandStartAt.isBefore(visit.getEndTime()) &&
+//                                visit.getStartAt().isBefore(commandEndTime)
+//                );
+        List<Visit> overlaps = visitRepository.findOverlapping(command.getDoctorId(), command.getStartAt(), command.getEndTime());
 
-        boolean overlaps = visitRepository.findAll()
-                .stream()
-                .filter(visit -> doctorId.equals(visit.getDoctor().getId()))
-                .anyMatch(visit ->
-                        commandStartAt.isBefore(visit.getEndTime()) &&
-                                visit.getStartAt().isBefore(commandEndTime)
-                );
-
-        if (overlaps) {
+        if (!overlaps.isEmpty()) {
             throw new VisitsInTheSameTimeException("Visit which you creating, clashes with another one", HttpStatus.BAD_REQUEST);
         }
     }
