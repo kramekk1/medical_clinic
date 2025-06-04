@@ -1,20 +1,14 @@
 package com.kramekk1.medicalClinic;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.mapstruct.Mapper;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class InstitutionMapper {
+@Mapper(componentModel = "spring")
+public interface InstitutionMapper {
 
-    public static InstitutionDTO convertToDTO(Institution institution) {
-        return new InstitutionDTO(institution.getName(), institution.getPostalCode(), institution.getAddress());
-    }
+    InstitutionDTO toDTO(Institution institution);
 
-    public static InstitutionDTO convertToDTO(CreateInstitutionCommand institution) {
-        return new InstitutionDTO(institution.getName(), institution.getPostalCode(), institution.getAddress());
-    }
+    InstitutionDTO toDTO(CreateInstitutionCommand institutionCommand);
 
-    public static Institution convertToEntity(CreateInstitutionCommand institution) {
-        return new Institution(institution.getName(), institution.getPostalCode(), institution.getAddress());
-    }
+    Institution toEntity(CreateInstitutionCommand institutionCommand);
+
 }

@@ -8,13 +8,14 @@ import org.springframework.http.HttpStatus;
 public final class InstitutionValidator {
 
     public static void validateInstitutionFields(Institution institution) {
-        if (institution.getName() == null || institution.getPostalCode() == null || institution.getAddress() == null) {
+        if (institution.getName() == null || institution.getCity() == null || institution.getPostalCode() == null
+                || institution.getStreet() == null || institution.getBuildingNumber() == null) {
             throw new InstitutionDataFieldNullException("One or more institution data field is null", HttpStatus.BAD_REQUEST);
         }
     }
 
     public static void validateInstitutionNameDuplicate(Institution institution, InstitutionRepository institutionRepository) {
-        if (institutionRepository.getAll().stream().anyMatch(inst -> institution.getName().equals(inst.getName()))) {
+        if (institutionRepository.findAll().stream().anyMatch(inst -> institution.getName().equals(inst.getName()))) {
             throw new InstitutionNameDuplicateException("Institution with this name already exist", HttpStatus.BAD_REQUEST);
         }
     }
