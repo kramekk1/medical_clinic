@@ -2,6 +2,8 @@ package com.kramekk1.medicalClinic;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -24,11 +26,9 @@ public class DoctorService {
         return doctorMapper.toDTO(doctor);
     }
 
-    public List<DoctorDTO> getAll() {
-        return doctorRepository.findAll()
-                .stream()
-                .map(doctorMapper::toDTO)
-                .toList();
+    public Page<DoctorDTO> getAll(Pageable pageable) {
+        return doctorRepository.findAll(pageable)
+                .map(doctorMapper::toDTO);
     }
 
     public DoctorDTO getById(Long id) {
@@ -68,5 +68,12 @@ public class DoctorService {
         foundedDoctor.addInstitutionToDoctor(foundedInstitution);
 
         return doctorMapper.toDTO(doctorRepository.save(foundedDoctor));
+    }
+
+    public List<DoctorDTO> getBySpecialization(SpecializationType specializationType) {
+        return doctorRepository.findAllBySpecializationType(specializationType)
+                .stream()
+                .map(doctorMapper::toDTO)
+                .toList();
     }
 }

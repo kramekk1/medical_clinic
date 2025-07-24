@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -51,10 +54,12 @@ public class UserControllerTest {
         UserDTO userDTO = new UserDTO("username");
         UserDTO userDTO1 = new UserDTO("username1");
 
-        when(userService.getAll()).thenReturn(List.of(userDTO, userDTO1));
+        Page<UserDTO> page = new PageImpl<>(List.of(userDTO, userDTO1));
+
+        when(userService.getAll(any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/users"))
                 .andDo(print())
-                .andExpect(jsonPath("$[0].username").value("username"));
+                .andExpect(jsonPath("$.totalElements").value(2));
     }
 }

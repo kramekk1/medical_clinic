@@ -2,10 +2,10 @@ package com.kramekk1.medicalClinic;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -14,10 +14,9 @@ public class InstitutionService {
     private final InstitutionRepository institutionRepository;
     private final InstitutionMapper institutionMapper;
 
-    public List<InstitutionDTO> getAll() {
-        return institutionRepository.findAll().stream()
-                .map(institutionMapper::toDTO)
-                .toList();
+    public Page<InstitutionDTO> getAll(Pageable pageable) {
+        return institutionRepository.findAll(pageable)
+                .map(institutionMapper::toDTO);
     }
 
     @Transactional

@@ -34,6 +34,12 @@ databaseChangeLog:
               - column:
                   name: specialization_type
                   type: varchar(250)
+              - column:
+                  name: phone_number
+                  type: varchar(250)
+              - column:
+                  name: stats_id
+                  type: varchar(250)
         - createTable:
             tableName: institutions
             columns:

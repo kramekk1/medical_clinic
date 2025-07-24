@@ -1,10 +1,10 @@
 package com.kramekk1.medicalClinic;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,8 +20,8 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserDTO> getAll() {
-        return userService.getAll();
+    public Page<UserDTO> getAll(Pageable pageable) {
+        return userService.getAll(pageable);
     }
 
 }

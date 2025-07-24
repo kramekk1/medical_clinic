@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 6
+      author: Jakub4
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: ratings
+      changes:
+        - createTable:
+            tableName: ratings
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+              - column:
+                  name: total_visits_created
+                  type: INT
+              - column:
+                  name: unbooked_visits
+                  type: INT
+              - column:
+                  name: unbooked_visits_percentage
+                  type: DOUBLE

@@ -2,10 +2,10 @@ package com.kramekk1.medicalClinic;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 // klasa bean service do obsługi logiki biznesowej, glownie przekierowuje do metod z PatientRepository, które działają na zasobach
@@ -27,11 +27,9 @@ public class PatientService {
         return patientMapper.toDTO(patientRepository.save(foundPatient));
     }
 
-    public List<PatientDTO> getAll() {
-        return patientRepository.findAll()
-                .stream()
-                .map(patientMapper::toDTO)
-                .toList();
+    public Page<PatientDTO> getAll(Pageable pageable) {
+        return patientRepository.findAll(pageable)
+                .map(patientMapper::toDTO);
     }
 
     public PatientDTO getPatientByEmail(String email) {

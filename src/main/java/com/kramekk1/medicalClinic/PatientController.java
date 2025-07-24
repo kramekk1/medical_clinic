@@ -1,10 +1,11 @@
 package com.kramekk1.medicalClinic;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController //Adnotacja mowiaca ze klasa jest beanem typu controller- obslugujaca endpointy na bazie protokołu http
 @RequiredArgsConstructor //adnotacja tworzaca konstruktor w momencie kompilacji na podstawie pól finalnych
@@ -13,9 +14,9 @@ public class PatientController {
 
     private final PatientService patientService; // pole finalne, które z @ReqArgsConst tworzy konstruktor z tym polem i dzieki temu wstrzykuje zaleznosci klasy service, która jest tutaj beanem
 
-    @GetMapping // pobierz zasób z serwera
-    public List<PatientDTO> getPatients() {
-        return patientService.getAll();
+    @GetMapping
+    public Page<PatientDTO> getPatients(Pageable pageable) {
+        return patientService.getAll(pageable);
     }
 
     @GetMapping("/{email}") // pobierz zasób z serwera na podstawie adresu email przekazanego w ścieżce -> @PathVariable

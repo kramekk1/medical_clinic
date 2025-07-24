@@ -2,9 +2,9 @@ package com.kramekk1.medicalClinic;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -12,11 +12,10 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    public List<UserDTO> getAll() {
-        return userRepository.findAll()
-                .stream()
-                .map(userMapper::toDTO)
-                .toList();
+
+    public Page<UserDTO> getAll(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(userMapper::toDTO);
     }
 
     @Transactional

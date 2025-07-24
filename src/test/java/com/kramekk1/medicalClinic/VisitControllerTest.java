@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,35 +39,37 @@ public class VisitControllerTest {
 
     @Test
     public void getAll_visitDtoListReturnedWithStatus200() throws Exception {
-        VisitDTO visitDTO = new VisitDTO(LocalDateTime.now(), LocalDateTime.now(), 1L, 1L);
-        VisitDTO visitDTO1 = new VisitDTO(LocalDateTime.now(), LocalDateTime.now(), 2L, 2L);
+        VisitDTO visitDTO = new VisitDTO(LocalDateTime.now(), LocalDateTime.now(), 1L, 1L, VisitStatus.COMPLETED);
+        VisitDTO visitDTO1 = new VisitDTO(LocalDateTime.now(), LocalDateTime.now(), 2L, 2L, VisitStatus.COMPLETED);
 
-        when(visitService.getAll()).thenReturn(List.of(visitDTO, visitDTO1));
+        Page<VisitDTO> page = new PageImpl<>(List.of(visitDTO, visitDTO1));
+
+        when(visitService.getAll(any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/visits"))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].doctorId").value(1L))
-                .andExpect(jsonPath("$[1].patientId").value(2L));
+                .andExpect(status().isOk());
+
     }
 
     @Test
     public void getByPatientId_visitDtoListReturnedWithStatus200() throws Exception {
-        VisitDTO visitDTO = new VisitDTO(LocalDateTime.now(), LocalDateTime.now(), 1L, 1L);
-        VisitDTO visitDTO1 = new VisitDTO(LocalDateTime.now(), LocalDateTime.now(), 2L, 2L);
+        VisitDTO visitDTO = new VisitDTO(LocalDateTime.now(), LocalDateTime.now(), 1L, 1L, VisitStatus.COMPLETED);
+        VisitDTO visitDTO1 = new VisitDTO(LocalDateTime.now(), LocalDateTime.now(), 2L, 2L, VisitStatus.COMPLETED);
 
-        when(visitService.getByPatientId(any())).thenReturn(List.of(visitDTO, visitDTO1));
+        Page<VisitDTO> page = new PageImpl<>(List.of(visitDTO, visitDTO1));
 
-        mockMvc.perform(get("/visits/1"))
+        when(visitService.getByPatientId(any(), any(Pageable.class))).thenReturn(page);
+
+        mockMvc.perform(get("/visits/by-patient?patientId=1"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].doctorId").value(1L))
-                .andExpect(jsonPath("$[1].patientId").value(2L));
+                .andExpect(jsonPath("$.totalElements").value(2));
     }
 
     @Test
     public void create_visitDtoReturnedWithStatus201() throws Exception {
-        VisitDTO visitDTO = new VisitDTO(LocalDateTime.now(), LocalDateTime.now(), 1L, 1L);
+        VisitDTO visitDTO = new VisitDTO(LocalDateTime.now(), LocalDateTime.now(), 1L, 1L, VisitStatus.COMPLETED);
         CreateVisitCommand command = new CreateVisitCommand(LocalDateTime.now(), LocalDateTime.now(), 1L);
 
         when(visitService.create(any())).thenReturn(visitDTO);
@@ -80,7 +85,7 @@ public class VisitControllerTest {
 
     @Test
     public void assignPatient_visitDtoReturnedWithStatus200() throws Exception {
-        VisitDTO visitDTO = new VisitDTO(LocalDateTime.now(), LocalDateTime.now(), 1L, 1L);
+        VisitDTO visitDTO = new VisitDTO(LocalDateTime.now(), LocalDateTime.now(), 1L, 1L, VisitStatus.COMPLETED);
         AssignPatientCommand command = new AssignPatientCommand(1L);
 
         when(visitService.assignPatient(any(), any())).thenReturn(visitDTO);

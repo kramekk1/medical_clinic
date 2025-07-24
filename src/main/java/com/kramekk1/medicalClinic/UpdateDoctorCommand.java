@@ -17,5 +17,6 @@ public class UpdateDoctorCommand {
     private String firstname;
     private String surname;
     private SpecializationType specializationType;
+    private String phoneNumber;
     private List<Long> institutionIds;
 }

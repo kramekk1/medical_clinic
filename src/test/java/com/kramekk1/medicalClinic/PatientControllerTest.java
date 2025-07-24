@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,15 +42,15 @@ public class PatientControllerTest {
         PatientDTO patientDTO = new PatientDTO("email", "firstname", "lastname", "phoneNumber", LocalDate.now(), "fullname");
         PatientDTO patientDTO1 = new PatientDTO("email1", "firstname1", "lastname", "phoneNumber", LocalDate.now(), "fullname");
 
-        when(patientService.getAll()).thenReturn(List.of(patientDTO, patientDTO1));
+        Page<PatientDTO> page = new PageImpl<>(List.of(patientDTO, patientDTO1));
+
+        when(patientService.getAll(any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/patients")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(2))
-                .andExpect(jsonPath("$[0].email").value("email"))
-                .andExpect(jsonPath("$[1].email").value("email1"));
+                .andExpect(jsonPath("$.totalElements").value(2));
     }
 
     @Test

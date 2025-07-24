@@ -33,6 +33,12 @@ public class Doctor {
     )
     private List<Institution> institutions = new ArrayList<>();
 
+    private String phoneNumber;
+
+    @OneToOne
+    @JoinColumn(name = "stats_id")
+    private DoctorVisitStatsEntity stats;
+
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<Visit> visit;
 
@@ -46,6 +52,14 @@ public class Doctor {
 
     public void addInstitutionToDoctor(Institution institution) {
         this.institutions.add(institution);
+    }
+
+    public void updateTotalVisitCreatedStats() {
+        DoctorVisitStatsEntity newStats = new DoctorVisitStatsEntity();
+        newStats.setTotalVisitsCreated(stats.getTotalVisitsCreated() + 1);
+        newStats.setUnbookedVisits(stats.getUnbookedVisits());
+        newStats.setUnbookedVisitsPercentage(newStats.getTotalVisitsCreated() / newStats.getUnbookedVisits() * 100);
+
     }
 
     @Override

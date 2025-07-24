@@ -5,6 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
@@ -35,15 +39,18 @@ public class InstitutionServiceTest {
         Institution institution = new Institution(1L, "name", "city", "address", "postalCode", "street", "buildingNumber", new ArrayList<>());
         Institution institution1 = new Institution(2L, "name1", "city1", "address1", "postalCode1", "street1", "buildingNumbe1r", new ArrayList<>());
 
-        when(institutionRepository.findAll()).thenReturn(List.of(institution, institution1));
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Institution> page = new PageImpl<>(List.of(institution, institution1));
 
-        List<InstitutionDTO> result = institutionService.getAll();
+        when(institutionRepository.findAll(pageable)).thenReturn(page);
+
+        Page<InstitutionDTO> result = institutionService.getAll(pageable);
 
         Assertions.assertAll(
-                () -> assertEquals(1L, result.get(0).getId()),
-                () -> assertEquals("name", result.get(0).getName()),
-                () -> assertEquals(2L, result.get(1).getId()),
-                () -> assertEquals(2, result.size())
+                () -> assertEquals(1L, result.getContent().get(0).getId()),
+                () -> assertEquals("name", result.getContent().get(0).getName()),
+                () -> assertEquals(2L, result.getContent().get(1).getId()),
+                () -> assertEquals(2, result.getTotalElements())
         );
     }
 

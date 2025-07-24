@@ -5,6 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
@@ -44,10 +48,10 @@ public class VisitServiceTest {
         LocalTime endTime = LocalTime.of(23, 30,0);
 
         CreateVisitCommand command = new CreateVisitCommand(date.atTime(startTime), date.atTime(endTime), 1L);
-        Doctor doctor = new Doctor(1L, "email", "password", "firstname", "surname", SpecializationType.CARDIO, new ArrayList<>(), new ArrayList<>());
+        Doctor doctor = new Doctor(1L, "email", "password", "firstname", "surname", SpecializationType.CARDIO, new ArrayList<>(), "123456789", new DoctorVisitStatsEntity(), new ArrayList<>());
         when(doctorRepository.findById(any())).thenReturn(Optional.of(doctor));
 
-        Visit visit = new Visit(1L, date.atTime(startTime), date.atTime(endTime), doctor, new Patient());
+        Visit visit = new Visit(1L, date.atTime(startTime), date.atTime(endTime), VisitStatus.COMPLETED, doctor, new Patient());
         when(visitRepository.save(any())).thenReturn(visit);
 
         VisitDTO result = visitService.create(command);
@@ -68,7 +72,7 @@ public class VisitServiceTest {
 
         Patient patient = new Patient(1L, "email", "idCardNo", "firstname", "lastname", "phoneNumber", date, new User(), List.of());
         when(patientRepository.findById(patient.getId())).thenReturn(Optional.of(patient));
-        Visit visit = new Visit(1L, date.atTime(startTime), date.atTime(endTime), new Doctor(), null);
+        Visit visit = new Visit(1L, date.atTime(startTime), date.atTime(endTime), VisitStatus.COMPLETED, new Doctor(), null);
         when(visitRepository.findById(visit.getId())).thenReturn(Optional.of(visit));
         when(visitRepository.save(any())).thenReturn(visit);
 
@@ -81,32 +85,38 @@ public class VisitServiceTest {
 
     @Test
     void getAll_allExist_visitDtoListReturned() {
-        Visit visit = new Visit(1L, LocalDateTime.now(), LocalDateTime.now(), new Doctor(), new Patient());
-        Visit visit1 = new Visit(2L, LocalDateTime.now(), LocalDateTime.now(), new Doctor(), new Patient());
+        Visit visit = new Visit(1L, LocalDateTime.now(), LocalDateTime.now(), VisitStatus.COMPLETED, new Doctor(), new Patient());
+        Visit visit1 = new Visit(2L, LocalDateTime.now(), LocalDateTime.now(), VisitStatus.COMPLETED, new Doctor(), new Patient());
 
-        when(visitRepository.findAll()).thenReturn(List.of(visit, visit1));
+        Pageable pageable = PageRequest.of(0,10);
+        Page<Visit> page = new PageImpl<>(List.of(visit, visit1));
 
-        List<VisitDTO> result = visitService.getAll();
+        when(visitRepository.findAll(pageable)).thenReturn(page);
+
+        Page<VisitDTO> result = visitService.getAll(pageable);
 
         Assertions.assertAll(
-                () -> assertEquals(2, result.size())
+                () -> assertEquals(2, result.getTotalElements())
         );
     }
 
     @Test
     void getByPatientId_patientWithVisitsExist_visitDtoListReturned() {
         Patient patient = new Patient(1L, "email", "idCardNo", "firstname", "lastname", "phoneNumber", LocalDate.now(), new User(), List.of());
-        Visit visit = new Visit(1L, LocalDateTime.now(), LocalDateTime.now(), new Doctor(), patient);
-        Visit visit1 = new Visit(2L, LocalDateTime.now(), LocalDateTime.now(), new Doctor(), patient);
+        Visit visit = new Visit(1L, LocalDateTime.now(), LocalDateTime.now(), VisitStatus.COMPLETED, new Doctor(), patient);
+        Visit visit1 = new Visit(2L, LocalDateTime.now(), LocalDateTime.now(), VisitStatus.COMPLETED, new Doctor(), patient);
 
-        when(visitRepository.findAllByPatient_Id(any())).thenReturn(List.of(visit, visit1));
+        Pageable pageable = PageRequest.of(0,10);
+        Page<Visit> page = new PageImpl<>(List.of(visit, visit1));
 
-        List<VisitDTO> result = visitService.getByPatientId(patient.getId());
+        when(visitRepository.findAllByPatient_Id(any(), any(Pageable.class))).thenReturn(page);
+
+        Page<VisitDTO> result = visitService.getByPatientId(patient.getId(), pageable);
 
         Assertions.assertAll(
-                () -> assertEquals(2, result.size()),
-                () -> assertEquals(1L, result.get(0).getPatientId()),
-                () -> assertEquals(1L, result.get(1).getPatientId())
+                () -> assertEquals(2, result.getTotalElements()),
+                () -> assertEquals(1L, result.getContent().get(0).getPatientId()),
+                () -> assertEquals(1L, result.getContent().get(1).getPatientId())
         );
     }
 

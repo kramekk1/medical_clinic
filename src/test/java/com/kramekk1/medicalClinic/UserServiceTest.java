@@ -5,6 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -30,14 +34,17 @@ public class UserServiceTest {
         User user = new User(1L, "username", "password", new Patient());
         User user1 = new User(2L, "username1", "password1", new Patient());
 
-        when(userRepository.findAll()).thenReturn(List.of(user, user1));
+        Pageable pageable = PageRequest.of(0,10);
+        Page<User> page = new PageImpl<>(List.of(user, user1));
 
-        List<UserDTO> result = userService.getAll();
+        when(userRepository.findAll(pageable)).thenReturn(page);
+
+        Page<UserDTO> result = userService.getAll(pageable);
 
         Assertions.assertAll(
-                () -> assertEquals("username", result.get(0).getUsername()),
-                () -> assertEquals("username1", result.get(1).getUsername()),
-                () -> assertEquals(2, result.size())
+                () -> assertEquals("username", result.getContent().get(0).getUsername()),
+                () -> assertEquals("username1", result.getContent().get(1).getUsername()),
+                () -> assertEquals(2, result.getTotalElements())
         );
     }
 

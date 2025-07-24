@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,21 +39,22 @@ public class DoctorControllerTest {
 
     @Test
     public void getAll_doctorDtoListReturnedWithStatus200() throws Exception {
-        DoctorDTO doctorDTO = new DoctorDTO(1L, "email", "firstname", "surname", SpecializationType.CARDIO, List.of());
-        DoctorDTO doctorDTO1 = new DoctorDTO(2L, "email1", "firstname1", "surname1", SpecializationType.CARDIO, List.of());
+        DoctorDTO doctorDTO = new DoctorDTO(1L, "email", "firstname", "surname", SpecializationType.CARDIO, "123456789", List.of());
+        DoctorDTO doctorDTO1 = new DoctorDTO(2L, "email1", "firstname1", "surname1", SpecializationType.CARDIO, "123456789", List.of());
 
-        when(doctorService.getAll()).thenReturn(List.of(doctorDTO, doctorDTO1));
+        Page<DoctorDTO> page = new PageImpl<>(List.of(doctorDTO, doctorDTO1));
+
+        when(doctorService.getAll(any(Pageable.class))).thenReturn(page);
+
         mockMvc.perform(get("/doctors")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(2))
-                .andExpect(jsonPath("$[0].firstname").value("firstname"))
-                .andExpect(jsonPath("$[1].firstname").value("firstname1"));
+                .andExpect(jsonPath("$.totalElements").value(2));
     }
 
     @Test
     public void getById_doctorDtoReturnedWithStatus200() throws Exception {
-        DoctorDTO doctorDTO = new DoctorDTO(1L, "email", "firstname", "surname", SpecializationType.CARDIO, List.of());
+        DoctorDTO doctorDTO = new DoctorDTO(1L, "email", "firstname", "surname", SpecializationType.CARDIO, "123456789", List.of());
 
         when(doctorService.getById(any())).thenReturn(doctorDTO);
         mockMvc.perform(get("/doctors/1")
@@ -63,8 +67,8 @@ public class DoctorControllerTest {
 
     @Test
     public void create_doctorDtoStatus201Returned() throws Exception {
-        DoctorDTO doctorDTO = new DoctorDTO(1L, "email", "firstname", "surname", SpecializationType.CARDIO, List.of());
-        CreateDoctorCommand command = new CreateDoctorCommand("email", "password", "firstname", "surname", SpecializationType.CARDIO);
+        DoctorDTO doctorDTO = new DoctorDTO(1L, "email", "firstname", "surname", SpecializationType.CARDIO, "123456789", List.of());
+        CreateDoctorCommand command = new CreateDoctorCommand("email", "password", "firstname", "surname", SpecializationType.CARDIO, "123456789");
 
         when(doctorService.create(any())).thenReturn(doctorDTO);
 
@@ -78,8 +82,8 @@ public class DoctorControllerTest {
 
     @Test
     public void updateById_doctorDtoWithUpdatedFieldsReturned() throws Exception {
-        DoctorDTO doctorDTO = new DoctorDTO(1L, "email1", "firstname1", "surname", SpecializationType.CARDIO, List.of());
-        UpdateDoctorCommand command = new UpdateDoctorCommand("email1", "password", "firstname1", "surname", SpecializationType.CARDIO, new ArrayList<>());
+        DoctorDTO doctorDTO = new DoctorDTO(1L, "email1", "firstname1", "surname", SpecializationType.CARDIO, "123456789", List.of());
+        UpdateDoctorCommand command = new UpdateDoctorCommand("email1", "password", "firstname1", "surname", SpecializationType.CARDIO, "123456789", new ArrayList<>());
 
         when(doctorService.update(any(), any())).thenReturn(doctorDTO);
 
@@ -102,7 +106,7 @@ public class DoctorControllerTest {
 
     @Test
     public void addInstitutionById_doctorDtoReturnedWithStatus200() throws Exception {
-        DoctorDTO doctorDTO = new DoctorDTO(1L, "email", "firstname", "surname", SpecializationType.CARDIO, List.of());
+        DoctorDTO doctorDTO = new DoctorDTO(1L, "email", "firstname", "surname", SpecializationType.CARDIO, "123456789", List.of());
         AddInstitutionToDoctorCommand command = new AddInstitutionToDoctorCommand(1L);
 
         when(doctorService.addInstitutionToDoctorById(any(), any())).thenReturn(doctorDTO);

@@ -26,6 +26,9 @@ databaseChangeLog:
                   name: end_time
                   type: TIMESTAMP
               - column:
+                  name: status
+                  type: varchar(250)
+              - column:
                   name: doctor_id
                   type: BIGINT
               - column:

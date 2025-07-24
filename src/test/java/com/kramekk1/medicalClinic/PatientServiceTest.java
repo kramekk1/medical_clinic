@@ -5,6 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
@@ -35,16 +39,19 @@ public class PatientServiceTest {
         Patient patient = new Patient(1L, "email", "idCardNo", "firstname", "lastname", "phoneNumber", LocalDate.now(), new User(), List.of());
         Patient patient1 = new Patient(2L, "email1", "idCardNo1", "firstname1", "lastname1", "phoneNumber1", LocalDate.now(), new User(), List.of());
 
-        when(patientRepository.findAll()).thenReturn(List.of(patient, patient1));
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Patient> page = new PageImpl<>(List.of(patient, patient1));
 
-        List<PatientDTO> result = patientService.getAll();
+        when(patientRepository.findAll(pageable)).thenReturn(page);
+
+        Page<PatientDTO> result = patientService.getAll(pageable);
 
         Assertions.assertAll(
-                () -> assertEquals("email", result.get(0).getEmail()),
-                () -> assertEquals("firstname", result.get(0).getFirstName()),
-                () -> assertEquals("firstname1", result.get(1).getFirstName()),
-                () -> assertEquals("email1", result.get(1).getEmail()),
-                () -> assertEquals(2, result.size())
+                () -> assertEquals("email", result.getContent().get(0).getEmail()),
+                () -> assertEquals("firstname", result.getContent().get(0).getFirstName()),
+                () -> assertEquals("firstname1", result.getContent().get(1).getFirstName()),
+                () -> assertEquals("email1", result.getContent().get(1).getEmail()),
+                () -> assertEquals(2, page.getTotalElements())
         );
     }
 

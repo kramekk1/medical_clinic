@@ -20,6 +20,9 @@ public class Visit {
     private LocalDateTime startAt;
     private LocalDateTime endTime;
 
+    @Enumerated(EnumType.STRING)
+    private VisitStatus status;
+
     @ManyToOne
     @JoinColumn(name = "doctor_id", referencedColumnName = "id")
     private Doctor doctor;
@@ -27,4 +30,5 @@ public class Visit {
     @ManyToOne
     @JoinColumn(name = "patient_id", referencedColumnName = "id")
     private Patient patient;
+
 }

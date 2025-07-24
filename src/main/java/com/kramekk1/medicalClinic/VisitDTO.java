@@ -16,4 +16,5 @@ public class VisitDTO {
     private LocalDateTime endTime;
     private Long doctorId;
     private Long patientId;
+    private VisitStatus status;
 }

@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -38,14 +41,14 @@ public class InstitutionControllerTest {
         InstitutionDTO institutionDTO = new InstitutionDTO(1L, "name", "postalCode", "address", "street", "buildingNumber", new ArrayList<>());
         InstitutionDTO institutionDTO1 = new InstitutionDTO(2L, "name1", "postalCode1", "address1", "street1", "buildingNumber1", new ArrayList<>());
 
-        when(institutionService.getAll()).thenReturn(List.of(institutionDTO, institutionDTO1));
+        Page<InstitutionDTO> page = new PageImpl<>(List.of(institutionDTO, institutionDTO1));
+
+        when(institutionService.getAll(any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/institutions")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(2))
-                .andExpect(jsonPath("$[0].name").value("name"))
-                .andExpect(jsonPath("$[1].name").value("name1"));
+                .andExpect(jsonPath("$.totalElements").value(2));
     }
 
     @Test
