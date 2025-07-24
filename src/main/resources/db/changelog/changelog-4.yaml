@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5
+      author: Jakub3
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: visits
+      changes:
+        - createTable:
+            tableName: visits
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    unique: true
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: start_at
+                  type: TIMESTAMP
+              - column:
+                  name: end_time
+                  type: TIMESTAMP
+              - column:
+                  name: status
+                  type: varchar(250)
+              - column:
+                  name: doctor_id
+                  type: BIGINT
+              - column:
+                  name: patient_id
+                  type: BIGINT

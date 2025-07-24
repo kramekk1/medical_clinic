@@ -1,35 +1,37 @@
 package com.kramekk1.medicalClinic;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class InstitutionService {
 
     private final InstitutionRepository institutionRepository;
-    private final InstitutionMapperMapStruct institutionMapper;
+    private final InstitutionMapper institutionMapper;
 
-    public List<InstitutionDTO> getAll() {
-        return institutionRepository.getAll().stream()
-                .map(institutionMapper::toDTO)
-                .toList();
+    public Page<InstitutionDTO> getAll(Pageable pageable) {
+        return institutionRepository.findAll(pageable)
+                .map(institutionMapper::toDTO);
     }
 
-    public void delete(String institutionName) {
-        institutionRepository.findByName(institutionName)
-                .orElseThrow(() -> new InstitutionNotFoundException("Institution with this name not exist", HttpStatus.NOT_FOUND));
-        institutionRepository.delete(institutionName);
+    @Transactional
+    public void deleteById(Long id) {
+        institutionRepository.findById(id)
+                .orElseThrow(() -> new InstitutionNotFoundException("Institution with this ID" + id + " not exist", HttpStatus.NOT_FOUND));
+        institutionRepository.deleteById(id);
     }
 
-    public InstitutionDTO add(CreateInstitutionCommand institution) {
-        Institution institutionToEntity = institutionMapper.toEntity(institution);
+    @Transactional
+    public InstitutionDTO create(CreateInstitutionCommand command) {
+        Institution institutionToEntity = institutionMapper.toEntity(command);
         InstitutionValidator.validateInstitutionFields(institutionToEntity);
         InstitutionValidator.validateInstitutionNameDuplicate(institutionToEntity, institutionRepository);
-        institutionRepository.add(institutionToEntity);
-        return institutionMapper.toDTO(institution);
+
+        return institutionMapper.toDTO(institutionRepository.save(institutionToEntity));
     }
 }

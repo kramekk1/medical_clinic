@@ -1,33 +1,12 @@
 package com.kramekk1.medicalClinic;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+import lombok.NonNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+public interface InstitutionRepository extends JpaRepository<Institution, Long> {
 
-@RequiredArgsConstructor
-@Repository
-public class InstitutionRepository {
+    Page<Institution> findAll(@NonNull Pageable pageable);
 
-    private final List<Institution> institutions = new ArrayList<>();
-
-    public List<Institution> getAll() {
-        return new ArrayList<>(institutions);
-    }
-
-    public Optional<Institution> findByName(String name) {
-        return institutions.stream()
-                .filter(institution -> name.equals(institution.getName()))
-                .findFirst();
-    }
-
-    public void delete(String institutionName) {
-        institutions.removeIf(institution -> institutionName.equals(institution.getName()));
-    }
-
-    public void add(Institution institution) {
-        institutions.add(institution);
-    }
 }

@@ -1,0 +1,88 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Jakub
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: doctors
+      changes:
+        - createTable:
+            tableName: doctors
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    unique: true
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: firstname
+                  type: varchar(250)
+              - column:
+                  name: surname
+                  type: varchar(250)
+              - column:
+                  name: email
+                  type: varchar(250)
+              - column:
+                  name: password
+                  type: varchar(250)
+              - column:
+                  name: specialization_type
+                  type: varchar(250)
+              - column:
+                  name: phone_number
+                  type: varchar(250)
+              - column:
+                  name: stats_id
+                  type: varchar(250)
+        - createTable:
+            tableName: institutions
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    unique: true
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(250)
+              - column:
+                  name: city
+                  type: varchar(250)
+              - column:
+                  name: address
+                  type: varchar(250)
+              - column:
+                  name: postal_code
+                  type: varchar(250)
+              - column:
+                  name: street
+                  type: varchar(250)
+              - column:
+                  name: building_number
+                  type: varchar(250)
+        - createTable:
+            tableName: doctor_institution
+            columns:
+              - column:
+                  name: doctor_id
+                  type: BIGINT
+                  constraints:
+                    foreignKey: true
+                    foreignKeyName: fk_doctor
+                    references: DOCTORS(id)
+              - column:
+                  name: institution_id
+                  type: BIGINT
+                  constraints:
+                    foreignKey: true
+                    foreignKeyName: fk_institution
+                    references: INSTITUTIONS(id)
